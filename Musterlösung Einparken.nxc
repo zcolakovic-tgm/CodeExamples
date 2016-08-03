@@ -1,0 +1,41 @@
+#define SEN_US IN_4
+#define DISTANZ 10
+#define SPEED 50
+
+
+//Musterlösung Einparken
+
+task main(){
+
+    SetSensorLowspeed(SEN_US);
+    
+    bool eingeparkt = false;
+    
+    while(eingeparkt == false){
+        OnFwdSync(OUT_BC, SPEED, 0)
+        while(SensorUS(SEN_US) < DISTANZ){
+            //warte bis zum Beginn einer Lücke
+        }
+        long startzeit = CurrentTick();
+        //speichere den Beginn der Lücke
+        
+        while(SensorUS(SEN_US) > DISTANZ){
+            //warte bis zum Ende der Lücke
+        }
+        
+        //Rechne Zeit aus:
+        if(CurrentTick() - startzeit < 3000){
+            //parke ein
+            OnRevSync(OUT_BC, SPEED, -50);
+            Wait(1000);
+            OnRevSync(OUT_BC, SPEED, 30);
+            Wait(1500);
+            Off(OUT_BC);
+            
+            eingeparkt = true;
+            //Setze eingeparkt true sodass die Schleife abbricht.
+        }
+
+    }
+
+}

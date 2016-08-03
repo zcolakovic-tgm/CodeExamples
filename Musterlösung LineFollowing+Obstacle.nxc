@@ -1,0 +1,35 @@
+#define LIGHT_R IN_1
+#define LIGHT_L IN_2
+#define LIGHTVAL 40
+#define SPEED 35
+#define US_SEN IN_4
+
+task main()
+{
+    SetSensorLight(LIGHT_R);
+    SetSensorLight(LIGHT_L);
+    SetSensorLowspeed(US_SEN);
+    
+    while(true){
+        if(SensorUS(US_SEN) < 20){
+            OnFwdSync(OUT_BC, SPEED, -100);
+            Wait(1000);
+            OnFwdSync(OUT_BC, SPEED, 30);
+            Wait(3000);
+            while(Sensor(LIGHT_L) > LIGHTVAL){
+                OnFwdSync(OUT_BC, SPEED, 0);
+            }
+        }
+        else{
+            if(Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL){
+                OnFwdSync(OUT_BC, SPEED, 0);
+            }
+            else if(Sensor(LIGHT_R) < LIGHTVAL){
+                OnFwdSync(OUT_BC, SPEED, 100);
+            }
+            else if(Sensor(LIGHT_L) < LIGHTVAL){
+                OnFwdSync(OUT_BC, SPEED, -100);
+            }
+        }
+    }
+}
