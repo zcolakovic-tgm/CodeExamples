@@ -3,7 +3,7 @@
 #define SPEED 50
 
 
-//Musterlösung Einparken
+//MusterlÃ¶sung Einparken
 
 task main(){
 
@@ -14,13 +14,13 @@ task main(){
     while(eingeparkt == false){
         OnFwdSync(OUT_BC, SPEED, 0)
         while(SensorUS(SEN_US) < DISTANZ){
-            //warte bis zum Beginn einer Lücke
+            //warte bis zum Beginn einer LÃ¼cke
         }
         long startzeit = CurrentTick();
-        //speichere den Beginn der Lücke
+        //speichere den Beginn der LÃ¼cke
         
         while(SensorUS(SEN_US) > DISTANZ){
-            //warte bis zum Ende der Lücke
+            //warte bis zum Ende der LÃ¼cke
         }
         
         //Rechne Zeit aus:
