@@ -55,7 +55,7 @@ task main(){
             if(Sensor(LIGHT_L) > LIGHTVAL_GREEN) isGreenL = true;
             if(Sensor(LIGHT_R) > LIGHTVAL_GREEN) isGreenR = true;
             
-            if((Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL) || Sensor(LIGHT_M) < LIGHTVAL && Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL){
+            if(Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL || Sensor(LIGHT_R) < LIGHTVAL && Sensor(LIGHT_L) < LIGHTVAL < Sensor(LIGHT_M) < LIGHTVAL){
                 OnFwdSync(OUT_BC, SPEED, 0);
             }else if(isGreenL == true){
                 isGreenL = false;
