@@ -16,26 +16,20 @@ task main(){
     SetSensorLight(LIGHT_L);
     SetSensorLight(LIGHT_M);
     SetSensorTouch(T_SEN);
+    bool isBlackM,isBlackL,isBlackR,isGreenL,isGreenR;
+    int x = 0;
 
     while(true){
         if(Sensor(T_SEN) == true){
-        
+
             OnFwd(OUT_BC, -SPEED);
             Wait(800);
-            
+
             OnFwdSync(OUT_BC, SPEED,40);
             Wait(800);
-            
+
             OnFwdSync(OUT_BC, SPEED,0);
             Wait(2000);
-            
-            Off(OUT_BC);
-
-            OnFwdSync(OUT_BC, SPEED, -30);
-            Wait(1000);
-            
-            OnFwdSync(OUT_BC, SPEED, 0);
-            Wait(1200);
 
             Off(OUT_BC);
 
@@ -43,20 +37,38 @@ task main(){
             Wait(1000);
 
             OnFwdSync(OUT_BC, SPEED, 0);
-            
+            Wait(900);
+
+            Off(OUT_BC);
+
+            OnFwdSync(OUT_BC, SPEED, -32);
+            Wait(1150);
+
+            OnFwdSync(OUT_BC, SPEED, 0);
+
             OnFwdSync(OUT_BC, SPEED, 30);
-            Wait(200);
-            
-            OnFwdSync(OUT_BC, SPEED, 0);
+            Wait(300);
 
-        }else{
-            if((Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL) || (Sensor(LIGHT_M) > LIGHTVAL && (Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL))){
+         }else{
+            if(Sensor(LIGHT_L) > LIGHTVAL) isBlackL = true;
+            if(Sensor(LIGHT_R) > LIGHTVAL) isBlackR = true;
+            if(Sensor(LIGHT_M) > LIGHTVAL) isBlackM = true;
+            if(Sensor(LIGHT_L) > LIGHTVAL_GREEN) isGreenL = true;
+            if(Sensor(LIGHT_R) > LIGHTVAL_GREEN) isGreenR = true;
+            
+            if((Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL) || Sensor(LIGHT_M) < LIGHTVAL && Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL){
                 OnFwdSync(OUT_BC, SPEED, 0);
-            }else if(Sensor(LIGHT_R) < LIGHTVAL || (Sensor(LIGHT_R) < LIGHTVAL_GREEN)){
-                OnFwdSync(OUT_BC, SPEED, 100);
-            }else if((Sensor(LIGHT_L) < LIGHTVAL) || (Sensor(LIGHT_L) < LIGHTVAL_GREEN)){
+            }else if(isGreenL == true){
+                isGreenL = false;
                 OnFwdSync(OUT_BC, SPEED, -100);
-            }else if((Sensor(LIGHT_L) < LIGHTVAL && Sensor(LIGHT_L) < LIGHTVAL)){
+            }else if(isGreenR == true){
+                isGreenR = false;
+                OnFwdSync(OUT_BC, SPEED, 100);
+            }else if(Sensor(LIGHT_R) < LIGHTVAL || Sensor(LIGHT_R) < LIGHTVAL_GREEN){
+                OnFwdSync(OUT_BC, SPEED, 100);
+            }else if(Sensor(LIGHT_L) < LIGHTVAL || Sensor(LIGHT_L) < LIGHTVAL_GREEN){
+                OnFwdSync(OUT_BC, SPEED, -100);
+            }else if(Sensor(LIGHT_L) < LIGHTVAL && Sensor(LIGHT_R) < LIGHTVAL){
                 OnFwdSync(OUT_BC, SPEED, 100);
             }
         }
