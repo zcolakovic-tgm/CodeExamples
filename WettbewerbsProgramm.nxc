@@ -1,6 +1,6 @@
 /*
 /@author Zeljko Colakovic & Barbara Scharfhauser
-/@date 03.08.2016
+/@ 03.08.2016
 / WettbewerbsCode
 */
 #define T_SEN IN_1
@@ -14,6 +14,7 @@
 task main(){
     SetSensorLight(LIGHT_R);
     SetSensorLight(LIGHT_L);
+    SetSensorLight(LIGHT_M);
     SetSensorTouch(T_SEN);
 
     while(true){
@@ -49,13 +50,13 @@ task main(){
             OnFwdSync(OUT_BC, SPEED, 0);
 
         }else{
-        if((Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL) || (Sensor(LIGHT_M) < LIGHTVAL)){
-            OnFwdSync(OUT_BC, SPEED, 0);
-        }else if(Sensor(LIGHT_R) < LIGHTVAL || (Sensor(LIGHT_R) < LIGHTVAL && Sensor(LIGHT_R) < LIGHTVAL_GREEN)){
-            OnFwdSync(OUT_BC, SPEED, 100);
-        }else if((Sensor(LIGHT_L) < LIGHTVAL) || (Sensor(LIGHT_L) < LIGHTVAL && Sensor(LIGHT_L) < LIGHTVAL_GREEN)){
-            OnFwdSync(OUT_BC, SPEED, -100);
+            if((Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL) || (Sensor(LIGHT_M) > LIGHTVAL && (Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL))){
+                OnFwdSync(OUT_BC, SPEED, 0);
+            }else if(Sensor(LIGHT_R) < LIGHTVAL || (Sensor(LIGHT_R) < LIGHTVAL && Sensor(LIGHT_R) < LIGHTVAL_GREEN)){
+                OnFwdSync(OUT_BC, SPEED, 100);
+            }else if((Sensor(LIGHT_L) < LIGHTVAL) || (Sensor(LIGHT_L) < LIGHTVAL && Sensor(LIGHT_L) < LIGHTVAL_GREEN)){
+                OnFwdSync(OUT_BC, SPEED, -100);
+            }
         }
-    }
-}
+    W}
 }
