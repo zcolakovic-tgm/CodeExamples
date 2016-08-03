@@ -1,3 +1,9 @@
+/*
+//@author Zeljko Colakovic
+//@date 01.08.2016
+//Tutorial...
+*/
+
 #define LIGHT_R IN_1
 #define LIGHT_L IN_2
 #define LIGHTVAL 40
