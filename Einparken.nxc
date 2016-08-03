@@ -1,3 +1,9 @@
+/*
+//@author Zeljko Colakovic
+//@date 01.08.2016
+//Tutorial...
+*/
+
 #define SEN_US IN_4
 #define DISTANZ 10
 #define SPEED 50
