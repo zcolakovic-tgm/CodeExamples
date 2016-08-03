@@ -52,10 +52,12 @@ task main(){
         }else{
             if((Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL) || (Sensor(LIGHT_M) > LIGHTVAL && (Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL))){
                 OnFwdSync(OUT_BC, SPEED, 0);
-            }else if(Sensor(LIGHT_R) < LIGHTVAL || Sensor(LIGHT_R) < LIGHTVAL_GREEN)){
+            }else if(Sensor(LIGHT_R) < LIGHTVAL || (Sensor(LIGHT_R) < LIGHTVAL_GREEN)){
                 OnFwdSync(OUT_BC, SPEED, 100);
-            }else if((Sensor(LIGHT_L) < LIGHTVAL) || Sensor(LIGHT_L) < LIGHTVAL_GREEN)){
+            }else if((Sensor(LIGHT_L) < LIGHTVAL) || (Sensor(LIGHT_L) < LIGHTVAL_GREEN)){
                 OnFwdSync(OUT_BC, SPEED, -100);
+            }else if((Sensor(LIGHT_L) < LIGHTVAL && Sensor(LIGHT_L) < LIGHTVAL)){
+                OnFwdSync(OUT_BC, SPEED, 100);
             }
         }
     }
