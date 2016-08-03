@@ -50,9 +50,9 @@ task main(){
             Wait(300);
 
          }else{
-            if(Sensor(LIGHT_L) > LIGHTVAL) isBlackL = true;
-            if(Sensor(LIGHT_R) > LIGHTVAL) isBlackR = true;
-            if(Sensor(LIGHT_M) > LIGHTVAL) isBlackM = true;
+            //if(Sensor(LIGHT_L) > LIGHTVAL) isBlackL = true;
+            //if(Sensor(LIGHT_R) > LIGHTVAL) isBlackR = true;
+            //if(Sensor(LIGHT_M) > LIGHTVAL) isBlackM = true;
             if(Sensor(LIGHT_L) > LIGHTVAL_GREEN) isGreenL = true;
             if(Sensor(LIGHT_R) > LIGHTVAL_GREEN) isGreenR = true;
             
@@ -64,12 +64,10 @@ task main(){
             }else if(isGreenR == true){
                 isGreenR = false;
                 OnFwdSync(OUT_BC, SPEED, 100);
-            }else if(Sensor(LIGHT_R) < LIGHTVAL || Sensor(LIGHT_R) < LIGHTVAL_GREEN){
+            }else if(Sensor(LIGHT_R) < LIGHTVAL || Sensor(LIGHT_R) < LIGHTVAL_GREEN || Sensor(LIGHT_L) < LIGHTVAL && Sensor(LIGHT_R) < LIGHTVAL){
                 OnFwdSync(OUT_BC, SPEED, 100);
             }else if(Sensor(LIGHT_L) < LIGHTVAL || Sensor(LIGHT_L) < LIGHTVAL_GREEN){
                 OnFwdSync(OUT_BC, SPEED, -100);
-            }else if(Sensor(LIGHT_L) < LIGHTVAL && Sensor(LIGHT_R) < LIGHTVAL){
-                OnFwdSync(OUT_BC, SPEED, 100);
             }
         }
     }
