@@ -17,7 +17,6 @@ task main(){
     SetSensorLight(LIGHT_M);
     SetSensorTouch(T_SEN);
     bool isBlackM,isBlackL,isBlackR,isGreenL,isGreenR;
-    int x = 0;
 
     while(true){
         if(Sensor(T_SEN) == true){
