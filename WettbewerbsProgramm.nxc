@@ -1,0 +1,65 @@
+/*
+/@author Zeljko Colakovic & Barbara Scharfhauser
+/@ 03.08.2016
+/ WettbewerbsCode
+*/
+#define T_SEN IN_1
+#define LIGHT_R IN_2
+#define LIGHT_L IN_3
+#define LIGHT_M IN_4
+#define LIGHTVAL 50
+#define GREEN 52
+#define SPEED 35
+
+task main()
+{
+    SetSensorLight(LIGHT_R);
+    SetSensorLight(LIGHT_L);
+    SetSensorLowspeed(US_SEN);
+    SetSensorTouch(T_SEN);
+
+    while(true){
+        if(Sensor(T_SEN) == true){
+        
+            OnFwd(OUT_BC, -SPEED);
+            Wait(800);
+            
+            OnFwdSync(OUT_BC, SPEED,40);
+            Wait(800);
+            
+            OnFwdSync(OUT_BC, SPEED,0);
+            Wait(2000);
+            
+            Off(OUT_BC);
+
+            OnFwdSync(OUT_BC, SPEED, -30);
+            Wait(1000);
+            
+            OnFwdSync(OUT_BC, SPEED, 0);
+            Wait(1200);
+
+            Off(OUT_BC);
+
+            OnFwdSync(OUT_BC, SPEED, -30);
+            Wait(1000);
+
+            OnFwdSync(OUT_BC, SPEED, 0);
+            
+            OnFwdSync(OUT_BC, SPEED, 30);
+            Wait(200);
+            
+            OnFwdSync(OUT_BC, SPEED, 0);
+
+        }else{
+            if(Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL || (Sensor(LIGHT_M) < LIGHTVAL){
+                OnFwdSync(OUT_BC, SPEED, 0);
+            }
+            else if(Sensor(LIGHT_R) < LIGHTVAL){
+                OnFwdSync(OUT_BC, SPEED, 100);
+            }
+            else if(Sensor(LIGHT_L) < LIGHTVAL){
+                OnFwdSync(OUT_BC, SPEED, -100);
+            }
+        }
+    }
+}
