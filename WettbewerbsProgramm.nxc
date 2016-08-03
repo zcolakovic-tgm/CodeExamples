@@ -5,17 +5,15 @@
 */
 #define T_SEN IN_1
 #define LIGHT_R IN_2
-#define LIGHT_L IN_3
-#define LIGHT_M IN_4
+#define LIGHT_L IN_4
+#define LIGHT_M IN_3
 #define LIGHTVAL 50
-#define GREEN 52
+#define LIGHTVAL_GREEN 52
 #define SPEED 35
 
-task main()
-{
+task main(){
     SetSensorLight(LIGHT_R);
     SetSensorLight(LIGHT_L);
-    SetSensorLowspeed(US_SEN);
     SetSensorTouch(T_SEN);
 
     while(true){
@@ -51,15 +49,13 @@ task main()
             OnFwdSync(OUT_BC, SPEED, 0);
 
         }else{
-            if(Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL || (Sensor(LIGHT_M) < LIGHTVAL){
-                OnFwdSync(OUT_BC, SPEED, 0);
-            }
-            else if(Sensor(LIGHT_R) < LIGHTVAL){
-                OnFwdSync(OUT_BC, SPEED, 100);
-            }
-            else if(Sensor(LIGHT_L) < LIGHTVAL){
-                OnFwdSync(OUT_BC, SPEED, -100);
-            }
+        if((Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL) || (Sensor(LIGHT_M) < LIGHTVAL)){
+            OnFwdSync(OUT_BC, SPEED, 0);
+        }else if(Sensor(LIGHT_R) < LIGHTVAL || (Sensor(LIGHT_R) < LIGHTVAL && Sensor(LIGHT_R) < LIGHTVAL_GREEN)){
+            OnFwdSync(OUT_BC, SPEED, 100);
+        }else if((Sensor(LIGHT_L) < LIGHTVAL) || (Sensor(LIGHT_L) < LIGHTVAL && Sensor(LIGHT_L) < LIGHTVAL_GREEN)){
+            OnFwdSync(OUT_BC, SPEED, -100);
         }
     }
+}
 }
