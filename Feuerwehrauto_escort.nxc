@@ -5,7 +5,7 @@
 */
 
 // Geschwindigkeiten
-#define SPPED_FORWARD 100
+#define SPPED_FORWARD 50
 #define SPPED_SHOVEL 50
 
 // Sensoren
@@ -22,6 +22,11 @@
 // White = 38 Black = 22
 #define COLOR 30
 // Kugel nah 60 weiter weg 40
+#define BULLET_NEAR 48
+#define BULLET_FAR 38
+#define BULLET_CAPTURED 60
+
+bool position;
 
 /*
  *
@@ -30,6 +35,7 @@
 void Shovel_Up(){
      RotateMotor(SHOVEL,SPPED_SHOVEL,-270);
      Off(SHOVEL);
+     position = true;
 }
 
 /*
@@ -38,34 +44,15 @@ void Shovel_Up(){
  */
 void Shovel_Down(){
      RotateMotor(SHOVEL,SPPED_SHOVEL,260);
+     position = false;
 }
 
 /*
  *
  *
  */
-void DriveForward(){
-}
+void Caputer_Ball(){
 
-/*
- *
- *
- */
-void DriveBack(){
-}
-
-/*
- *
- *
- */
-void TurnLeft(){
-}
-
-/*
- *
- *
- */
-void TurnRight(){
 }
 
 /*
@@ -80,6 +67,10 @@ task main(){
      SetSensorLowspeed(US);
 
      while(true){
-
+         if(Sensor(US) > 20 && Sensor(LIGHT_RIGHT) > COLOR  && Sensor(LIGHT_LEFT) > COLOR){
+             OnFwdSync(ENGINE,SPPED_FORWARD,0);
+         }else if(Sensor(LIGHT_RIGHT) < COLOR  && Sensor(LIGHT_LEFT) < COLOR && Sensor(LIGHT_PEAK) < BULLET_CAPTURED){
+             while(Sensor(US) > 6)
+         }}else if(Sensor(LIGHT_RIGHT) < KUGEL_NAH  && Sensor(LIGHT_RIGHT) > COLOR ){
      }
 }
