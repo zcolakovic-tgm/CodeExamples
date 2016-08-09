@@ -24,36 +24,62 @@
 // Kugel nah 60 weiter weg 40
 
 /*
- * Methode zum aufheben des Balles
+ *
  *
  */
-void Found_ball(){
-     OnFwd(SHOVEL, 10);
-     
+void Shovel_Up(){
+     RotateMotor(SHOVEL,SPPED_SHOVEL,-270);
+     Off(SHOVEL);
 }
 
+/*
+ *
+ *
+ */
+void Shovel_Down(){
+     RotateMotor(SHOVEL,SPPED_SHOVEL,260);
+}
+
+/*
+ *
+ *
+ */
 void DriveForward(){
 }
 
+/*
+ *
+ *
+ */
 void DriveBack(){
 }
 
+/*
+ *
+ *
+ */
 void TurnLeft(){
 }
 
+/*
+ *
+ *
+ */
 void TurnRight(){
 }
 
+/*
+ *
+ *
+ */
 task main(){
      // Setzen der Sensoren
      SetSensorLight(LIGHT_LEFT);
      SetSensorLight(LIGHT_RIGHT);
      SetSensorLight(LIGHT_PEAK);
      SetSensorLowspeed(US);
+
      while(true){
-         NumOut(0,LCD_LINE1,MotorRotationCount(SHOVEL));
-         Wait(3000);
-         ClearScreen();
-         Found_ball();
+
      }
 }
