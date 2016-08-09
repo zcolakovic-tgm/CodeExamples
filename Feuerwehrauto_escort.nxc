@@ -4,31 +4,56 @@
 / WettbewerbsCode
 */
 
-task main() {
-    SetSensorLowspeed(IN_2);
+// Geschwindigkeiten
+#define SPPED_FORWARD 100
+#define SPPED_SHOVEL 50
 
+// Sensoren
+#define LIGHT_LEFT IN_4
+#define LIGHT_RIGHT IN_1
+#define LIGHT_PEAK IN_3
+#define US IN_2
 
-    while(true){
-        NumOut(LCD_LINE1,0,SensorUS(IN_3));
-        
-        OnFwdSync(OUT_AC,50,0);
-        while(SensorUS(IN_3) <= 20){
-            OnFwdSync(OUT_AC,-50,0);
-            NumOut(LCD_LINE2,0,SensorUS(IN_3));
-            
-        }
-    }
+// Motoren
+#define SHOVEL OUT_B
+#define ENGINE OUT_AC
 
-// Bau noch bei der langen Sternstange bei der Schaufel noch 2 Teile dran, damit die so ein richtiges Körbchen darstellen (: + pass aufas gewicht auf (:
-// Viel Glück und tut mir leid!
+// Color
+// White = 38 Black = 22
+#define COLOR 30
+// Kugel nah 60 weiter weg 40
 
-
-/* TO DO:
+/*
+ * Methode zum aufheben des Balles
  *
- * 1)Korb []
- * 2)US-Sensor [~] Teste ob er gegen die Wand fährt []
- * 3)Hinterachse []
- * 4)Stütze für den Ball []
- * 5)Code []
  */
+void Found_ball(){
+     OnFwd(SHOVEL, 10);
+     
+}
+
+void DriveForward(){
+}
+
+void DriveBack(){
+}
+
+void TurnLeft(){
+}
+
+void TurnRight(){
+}
+
+task main(){
+     // Setzen der Sensoren
+     SetSensorLight(LIGHT_LEFT);
+     SetSensorLight(LIGHT_RIGHT);
+     SetSensorLight(LIGHT_PEAK);
+     SetSensorLowspeed(US);
+     while(true){
+         NumOut(0,LCD_LINE1,MotorRotationCount(SHOVEL));
+         Wait(3000);
+         ClearScreen();
+         Found_ball();
+     }
 }
