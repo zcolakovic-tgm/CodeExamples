@@ -1,18 +1,20 @@
 /*
 /@author Zeljko Colakovic
 /@ 09.08.2016
-/ WettbewerbsCode
+/ WettbewerbsCode [Alle Rechte sind der Colakovic-Cooperation vorbehalten]
 */
 
 // Geschwindigkeiten
-#define SPPED_FORWARD 50
+#define SPPED_FORWARD 40
 #define SPPED_SHOVEL 50
 
-// Sensoren
-#define LIGHT_LEFT IN_4
+// Licht-Sensoren
 #define LIGHT_RIGHT IN_1
 #define LIGHT_PEAK IN_3
-#define US IN_2
+
+// US-Sensoren
+#define US_BULLET IN_4
+#define US_WALL IN_2
 
 // Motoren
 #define SHOVEL OUT_B
@@ -21,56 +23,66 @@
 // Color
 // White = 38 Black = 22
 #define COLOR 30
-// Kugel nah 60 weiter weg 40
-#define BULLET_NEAR 48
-#define BULLET_FAR 38
-#define BULLET_CAPTURED 60
-
-bool position;
 
 /*
- *
+ * Methode zum heben der Schaufel und abstellen in einem speziellen Winkel.
+ * @since 10.08.2016
  *
  */
 void Shovel_Up(){
      RotateMotor(SHOVEL,SPPED_SHOVEL,-270);
      Off(SHOVEL);
-     position = true;
 }
 
 /*
- *
+ * Methode zum ablegen der Schaufel, dass diese genau am Boden aufliegt.
+ * @since 10.08.2016
  *
  */
 void Shovel_Down(){
      RotateMotor(SHOVEL,SPPED_SHOVEL,260);
-     position = false;
 }
 
 /*
- *
- *
- */
-void Caputer_Ball(){
-
-}
-
-/*
- *
- *
+ * Main....
+ * @since 09.08.2016
  */
 task main(){
      // Setzen der Sensoren
-     SetSensorLight(LIGHT_LEFT);
      SetSensorLight(LIGHT_RIGHT);
      SetSensorLight(LIGHT_PEAK);
-     SetSensorLowspeed(US);
+     SetSensorLowspeed(US_WALL);
+     SetSensorLowspeed(US_BULLET);
 
      while(true){
-         if(Sensor(US) > 20 && Sensor(LIGHT_RIGHT) > COLOR  && Sensor(LIGHT_LEFT) > COLOR){
+          ClearScreen();
+          NumOut(0,LCD_LINE1,SensorUS(US_WALL));
+          NumOut(0,LCD_LINE2,SensorUS(US_BULLET));
+          NumOut(0,LCD_LINE3,MotorRotationCount(OUT_AC));
+
+         // Bewegund durch die Arena
+         if(SensorUS(US_WALL) > 15 && SensorUS(US_BULLET) > 10){
+             OnFwd(SHOVEL,-SPPED_FORWARD);
              OnFwdSync(ENGINE,SPPED_FORWARD,0);
-         }else if(Sensor(LIGHT_RIGHT) < COLOR  && Sensor(LIGHT_LEFT) < COLOR && Sensor(LIGHT_PEAK) < BULLET_CAPTURED){
-             while(Sensor(US) > 6)
-         }}else if(Sensor(LIGHT_RIGHT) < KUGEL_NAH  && Sensor(LIGHT_RIGHT) > COLOR ){
+
+         // Drehen
+         }else if(SensorUS(US_WALL) < 7 && SensorUS(US_BULLET) < 6){
+             NumOut(0,LCD_LINE1,SensorUS(US_WALL));
+             NumOut(0,LCD_LINE2,SensorUS(US_BULLET));
+             OnRevSync(ENGINE,SPPED_FORWARD,0);
+             Wait(1000 );
+             OnFwdSync(ENGINE,30,50);
+             Wait(1500);
+             NumOut(0,LCD_LINE4,MotorRotationCount(OUT_AC));
+             
+         // Ball gefunden
+         }else if(SensorUS(US_BULLET) <= 5 && SensorUS(US_WALL) > 10){
+             PlaySound(SOUND_DOWN);
+             // Safe-Zone gefunden
+             if(Sensor(LIGHT_RIGHT) < COLOR && SensorUS(US_BULLET) < 6 && SensorUS (US_WALL) > 10){
+
+             }
+         }
+
      }
 }
