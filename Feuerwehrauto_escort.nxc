@@ -21,7 +21,7 @@
 #define ENGINE OUT_AC
 
 // Color
-#define COLOR 34
+#define COLOR 32
 
 
 bool ballTrapped;
@@ -45,7 +45,7 @@ task main(){
              OnFwdSync(ENGINE,SPPED_FORWARD,0);
 
          // Drehen
-         }else if(SensorUS(US_WALL) < 8 && SensorUS(US_BULLET) < 12 || SensorUS(US_WALL) < 8 && SensorUS(US_BULLET) < 12 && Sensor(LIGHT_RIGHT) < COLOR){
+         }else if(SensorUS(US_WALL) < 8 && SensorUS(US_BULLET) < 14 || SensorUS(US_BULLET) < 8 && Sensor(LIGHT_RIGHT) < COLOR){
              OnRevSync(ENGINE,SPPED_FORWARD,0);
              Wait(1000);
              OnFwdSync(ENGINE,30,50);
@@ -75,16 +75,14 @@ task main(){
              while(Sensor(LIGHT_PEAK) < 36){
              }
 
-             if(Sensor(LIGHT_PEAK) > 36){
-                 OnRevSync(ENGINE,SPPED_FORWARD/2 ,0);
-                 Wait(2500);
+             OnRevSync(ENGINE,SPPED_FORWARD/2 ,0);
+             Wait(2500);
                  
-                 Off(ENGINE);
-                 Wait(1000);
-                 
-                 OnFwd(SHOVEL,-50);
-                 Wait(2000);
-             }
+             Off(ENGINE);
+             Wait(1000);
+             
+             OnFwd(SHOVEL,-50);
+             Wait(2000);
 
              // Überprüfen ob der Ball immer noch im Korb ist
              if(Sensor(LIGHT_PEAK) > 36) ballTrapped = true;
