@@ -84,8 +84,7 @@ task main(){
              OnFwd(SHOVEL,-50);
              Wait(2000);
 
-             // Überprüfen ob der Ball immer noch im Korb ist
-             if(Sensor(LIGHT_PEAK) > 36) ballTrapped = true;
+             ballTrapped = true;
 
              while(ballTrapped == true){
              
