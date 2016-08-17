@@ -1,0 +1,136 @@
+/**
+ * Vorwiegend Stürmer... (SLAVE)
+ *
+ * @author Zeljko Colakovic
+ * @version 2016-08-16
+ */
+
+
+// Ports
+#define LIGHT   IN_1
+#define IF      IN_2
+#define COMPASS IN_3
+#define TOUCH   IN_4
+
+#define ENGINE  OUT_BC
+
+// Bewegung
+#define AHEAD      0
+#define BACK       0
+#define TURN_LEFT  0
+#define TURN_RIGHT 0
+
+// Linien
+#define WHITE 0
+#define BLACK 0
+#defome GREEM 0
+
+// Geschwindigkeiten
+#define SPEED_NORMAL 50
+
+// Globale Variablen
+bool goal;
+
+/*
+ * Methode zur Suche des Balles...
+ *
+ * @since 2016-08-16
+ */
+inline bool FindBall(){
+    while(true){
+        // Gerade aus
+        if(SensorHTIRSeeker2ACDir(IF) == 5){
+            OnFwdSync(ENGINE,SPEED_NORMAL,0);
+
+        // Leicht links
+        }else if(SensorHTIRSeeker2ACDir(IF) <= 8 && SensorHTIRSeeker2ACDir(IF) >= 6){
+            OnFwdSync(ENGINE,SPEED_NORMAL,-30);
+
+        // Leicht rechts
+        }else if(SensorHTIRSeeker2ACDir(IF) <= 4 && SensorHTIRSeeker2ACDir(IF) >= 2){
+            OnFwdSync(ENGINE,SPEED_NORMAL,30);
+
+        // Stark links
+        }else if(SensorHTIRSeeker2ACDir(IF) == 9){
+            OnFwdSync(ENGINE,SPEED_NORMAL,-100);
+
+        // Stark rechts
+        }else if(SensorHTIRSeeker2ACDir(IF) == 2){
+            OnFwdSync(ENGINE,SPEED_NORMAL,100);
+        }
+    }
+}
+
+/*
+ * Methode die rausfindet auf welchem Tor gespielt werden soll...
+ *
+ * @since 2016-08-16
+ */
+inline bool whichGoal(){
+    if(SensorHTCompass(COMPASS) >= 340 && SensorHTCompass(COMPASS) <= 350){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+/*
+ * Methode zum gerade ausfahren um den Ball zu suchen
+ *
+ * @since 2016-08-16
+ */
+void FindGoal(){
+    goal = whichGoal();
+    while(true){
+        if(goal == true){
+            // Gerade aus
+            if(SensorHTCompass(COMPASS) >= 340 && SensorHTCompass(COMPASS) <= 350){
+                OnFwdSync(ENGINE,SPEED_NORMAL,0);
+
+            // Links
+            }else if(SensorHTCompass(COMPASS) >= 351 && SensorHTCompass(COMPASS) <= 359 || SensorHTCompass(COMPASS) >= 1 && SensorHTCompass(COMPASS) <= 107){
+                OnFwdSync(ENGINE,SPEED_NORMAL,-30);
+
+            // Rechts
+            }else if(SensorHTCompass(COMPASS) >= 108 && SensorHTCompass(COMPASS) <= 339){
+                OnFwdSync(ENGINE,SPEED_NORMAL,30);
+            }
+        }else{
+            // Gerade aus
+            if(SensorHTCompass(COMPASS) >= 100 && SensorHTCompass(COMPASS) <= 115){
+                OnFwdSync(ENGINE,SPEED_NORMAL,0);
+
+            // Links
+            }else if(SensorHTCompass(COMPASS) >= 116 && SensorHTCompass(COMPASS) <= 346){
+                OnFwdSync(ENGINE,SPEED_NORMAL,-30);
+
+            // Rechts
+            }else if(SensorHTCompass(COMPASS) >= 347 && SensorHTCompass(COMPASS) <= 359 || SensorHTCompass(COMPASS) >= 1 && SensorHTCompass(COMPASS) <= 99){
+                OnFwdSync(ENGINE,SPEED_NORMAL,30);
+            }
+        }
+    }
+}
+
+/*
+ * Methode die Überprüft ob der andere NXC erreichbar ist.
+ *
+ * @since 2016-08-16
+ */
+sub BTCheck(int conn){
+    if (BluetoothStatus(conn) == NO_ERR){
+        TextOut(5,LCD_LINE2,"Error");
+        Wait(1000);
+        Stop(true);
+    }
+}
+
+task main(){
+    // Sensoren setzen
+    SetSensorLight(LIGHT);
+    SetSensorLowspeed(IF);
+    SetSensorLowspeed(COMPASS);
+    
+    // Überprüft die Verbindung zum MASTER
+    BTCheck(0); 
+}
