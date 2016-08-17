@@ -1,0 +1,82 @@
+
+/*
+#define MOTOR OUT_BC
+#define SPEED 90
+#define SPEED_BALL 70
+#define INFR IN_4
+#define LS_R IN_1
+#define LS_L IN_3
+#define KOMPASS IN_2
+#define WHITE 35
+
+task main(){
+    SetSensorLight(LS_R);
+    SetSensorLight(LS_L);
+    SetSensorLowspeed (KOMPASS);
+    SetSensorLowspeed(INFR);
+    byte s1, s3, s5, s7, s9, dir;
+    bool result = ReadSensorHTIRSeeker2AC(INFR, dir, s1, s3, s5, s7, s9);
+
+    while(true){
+        // Weiße äußere Linie erkannt und gedreht
+        if(Sensor(LS_R) > WHITE){
+            OnRevSync(MOTOR, SPEED, 0);
+            Wait(700);
+        }
+        // Auf grünem Boden, fährt in die Richtung des Balles
+        else if(Sensor(LS_R) < WHITE){
+            ReadSensorHTIRSeeker2AC(INFR, dir, s1, s3, s5, s7, s9);
+            if(SensorHTIRSeeker2ACDir(INFR) == 1)
+            {
+                OnFwdSync(MOTOR, SPEED, -80);
+            }
+            else if(SensorHTIRSeeker2ACDir(INFR) == 2)
+            {
+               OnFwdSync(MOTOR, SPEED, -60);
+            }
+            else if(SensorHTIRSeeker2ACDir(INFR) == 3)
+            {
+               OnFwdSync(MOTOR, SPEED, -40);
+            }
+            else if(SensorHTIRSeeker2ACDir(INFR) == 4)
+            {
+               OnFwdSync(MOTOR, SPEED, -20);
+            }
+            else if(SensorHTIRSeeker2ACDir(INFR) == 5)
+            {
+               OnFwdSync(MOTOR, SPEED, 0);
+            }
+            else if(SensorHTIRSeeker2ACDir(INFR) == 6)
+            {
+               OnFwdSync(MOTOR, SPEED, 20);
+            }
+            else if(SensorHTIRSeeker2ACDir(INFR) == 7)
+            {
+               OnFwdSync(MOTOR, SPEED, 40);
+            }
+            else if(SensorHTIRSeeker2ACDir(INFR) == 8)
+            {
+               OnFwdSync(MOTOR, SPEED, 60);
+            }
+            else if(SensorHTIRSeeker2ACDir(INFR) == 9)
+            {
+               OnFwdSync(MOTOR, SPEED, 80);
+            }
+            if (s5 >= 170){
+                 if (SensorHTCompass (KOMPASS) > 280 && SensorHTCompass (KOMPASS) <345){
+                    OnFwdSync (MOTOR, SPEED_BALL, 0);
+                }
+                if(SensorHTCompass (KOMPASS) >=0 && SensorHTCompass (KOMPASS) <130) {
+                    OnFwdSync(MOTOR, 50,-50);
+                }
+                if(SensorHTCompass (KOMPASS) >=130 &&SensorHTCompass (KOMPASS)<345) {
+                    OnFwdSync(MOTOR, 50,50);
+                }
+                if(SensorHTCompass (KOMPASS) >=345 &&SensorHTCompass (KOMPASS)<359) {
+                    OnFwdSync(MOTOR, 50, -50);
+                }
+            }
+        }
+    }
+}
+*/
