@@ -1,0 +1,28 @@
+/*
+//@author Zeljko Colakovic
+//@date 01.08.2016
+//Tutorial...
+*/
+
+#define LIGHT_R IN_1
+#define LIGHT_L IN_2
+#define LIGHTVAL 40
+#define SPEED 35
+
+task main()
+{
+    SetSensorLight(LIGHT_R);
+    SetSensorLight(LIGHT_L);
+    
+    while(true){
+        if(Sensor(LIGHT_R) > LIGHTVAL && Sensor(LIGHT_L) > LIGHTVAL){
+            OnFwdSync(OUT_BC, SPEED, 0);
+        }
+        else if(Sensor(LIGHT_R) < LIGHTVAL){
+            OnFwdSync(OUT_BC, SPEED, 100);
+        }
+        else if(Sensor(LIGHT_L) < LIGHTVAL){
+            OnFwdSync(OUT_BC, SPEED, -100);
+        }
+    }
+}

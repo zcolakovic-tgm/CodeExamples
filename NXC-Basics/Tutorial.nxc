@@ -1,0 +1,169 @@
+/*
+//@author Zeljko Colakovic
+//@date 01.08.2016
+//Tutorial...
+*/
+
+// Konstanten
+#define SPEED 45
+#define MOTOR_RL OUT_AB
+#define MOTOR_R OUT_A
+#define MOTOR_L OUT_B
+#define DISTANZ IN_4
+
+// Main-Methode
+task main(){
+/*
+    // Gerade aus fahren. #"F1 ist dein Freund..."
+    // Nimmt auch negative Werte (fährt zurück), verwende mit Sensiren
+    OnFwd(MOTOR_RL,SPEED);
+    // wait in ml
+    Wait(3000);
+    //Synchronisiert 2 Motoren, kann verwendet werden um sich zu drehen
+    OnFwdSync(MOTOR_RL,SPEED,10);
+    // Bremsen
+    Off(MOTOR_RL);
+*/
+
+    // Aufgabe 1
+/*
+    OnFwdSync(MOTOR_RL,SPEED,15);
+    Wait(4800);
+    Off(MOTOR_RL);
+*/
+
+    //Aufgabe 2
+/*
+    OnFwdSync(MOTOR_RL,SPEED,0);
+    Wait(3000);
+    OnFwdSync(MOTOR_RL,SPEED/2,-25);
+    Wait(1200);
+    Off(OUT_AB);
+*/
+
+    // Aufgabe 3
+/*
+    //Basic Schleife
+    repeat(4){
+        OnFwdSync(MOTOR_RL,SPEED,0);
+        Wait(3000);
+        OnFwdSync(MOTOR_RL,SPEED/2,-25);
+        Wait(1200);
+        Off(MOTOR_RL);
+    }
+ */
+ 
+    // Aufgabe 4
+/*
+    TextOut(1, LCD_LINE1, "Hello World!");
+    NumOut(1, LCD_LINE2, 666);
+    Wait(3000);
+    ClearScreen();
+*/
+
+    // Aufgabe 5
+    
+/*
+    // Sesnor def.
+    SetSensorLowspeed(DISTANZ);
+
+,    while(true){
+        // SensorUS entnimmt den gemessenen Wert (Sensor Methdoe)
+        if(SensorUS(DISTANZ) > 50){
+            OnFwdSync(MOTOR_RL,SPEED,0);
+        }else{
+            OnFwdSync(MOTOR_RL,SPEED/2, 25);
+        }
+    }
+    Off(MOTOR_RL);
+*/
+
+    // Aufgabe 6
+    
+/*
+    SetSensorLowspeed(DISTANZ);
+    int ausgangswert = SensorUS(DISTANZ);
+    
+
+    while(SensorUS(DISTANZ) > 30){
+       OnFwdSync(MOTOR_RL,SPEED,0);
+    }
+    
+    Off(MOTOR_RL);
+    
+    while(SensorUS(DISTANZ)<= ausgangswert){
+        OnFwdSync(MOTOR_RL,-SPEED, 0);
+    }
+    
+    Off(MOTOR_RL);
+*/
+
+    // Aufgabe 7
+/*
+    SetSensorLowspeed(DISTANZ);
+    
+    while(SensorUS(DISTANZ) > 50){
+       OnFwdSync(MOTOR_RL,SPEED,0);
+    }
+    Off(MOTOR_RL);
+    
+    OnFwdSync(MOTOR_RL,SPEED/2, 30);
+    Wait(2000);
+    
+    while(SensorUS(DISTANZ) >= 50){
+        OnFwdSync(MOTOR_RL,SPEED/2, 30);
+    }
+    Off(MOTOR_RL);
+
+    OnFwdSync(MOTOR_RL,-SPEED,0);
+    Wait(2000);
+*/
+
+    // Aufgabe 8
+/*
+    SetSensorLowspeed(DISTANZ);
+    float startpunkt,endpunkt,zeit;
+    float startdistanz = SensorUS(DISTANZ);
+    ClearScreen();
+
+    // Schleife bis in die Unnendlichkeit
+    OnFwdSync(MOTOR_RL,SPEED, 0);
+    while(true){
+        // Misst wo die Lücke anfängt
+        while(SensorUS(DISTANZ) <= startdistanz){
+            NumOut(0, 0, SensorUS(DISTANZ));
+            startpunkt = CurrentTick();
+            TextOut(1, LCD_LINE1, "startpunkt");
+            NumOut(1, LCD_LINE2, startpunkt);
+            Wait(1000);
+        }
+        // Misst wo die Lücke endet
+        while(SensorUS(DISTANZ) > startdistanz){
+            endpunkt = CurrentTick();
+            TextOut(1, LCD_LINE3, "endpunkt");
+            NumOut(1, LCD_LINE4, endpunkt);
+            Wait(1000);
+        }
+    
+        // Differenz der zwei punkte in ms
+        TextOut(1, LCD_LINE5, "differenz");
+        zeit = endpunkt - startpunkt;
+        NumOut(1, LCD_LINE6, zeit);
+        Wait(1000);
+    
+        // Falls mehr als 4s benötigt wird parkt er ein
+        if(zeit > 4000){
+            Off(MOTOR_RL);
+            OnFwdSync(MOTOR_RL,-SPEED, 0);
+            Wait(3000);
+            OnFwdSync(MOTOR_RL,SPEED, 18);
+            Wait(2000);
+            OnFwdSync(MOTOR_RL,-SPEED, 0);
+            Wait(3000);
+            OnFwdSync(MOTOR_RL,SPEED, 50);
+            Wait(3500);
+            break;
+        }
+    }
+*/
+}

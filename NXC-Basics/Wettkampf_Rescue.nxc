@@ -1,0 +1,115 @@
+/*
+/@author Zeljko Colakovic
+/@ 09.08.2016
+/ WettbewerbsCode [Alle Rechte sind der Colakovic-Cooperation vorbehalten]
+*/
+
+// Geschwindigkeiten
+#define SPPED_FORWARD 30
+#define SPPED_SHOVEL 50
+
+// Licht-Sensoren
+#define LIGHT_RIGHT IN_1
+#define LIGHT_PEAK IN_3
+
+// US-Sensoren
+#define US_BULLET IN_4
+#define US_WALL IN_2
+
+// Motoren
+#define SHOVEL OUT_B
+#define ENGINE OUT_AC
+
+// Color
+#define COLOR 32
+
+
+bool ballTrapped;
+
+/*
+ * Main...
+ * @since 09.08.2016
+ */
+task main(){
+     // Setzen der Sensoren
+     SetSensorLight(LIGHT_RIGHT);
+     SetSensorLight(LIGHT_PEAK);
+     SetSensorLowspeed(US_WALL);
+     SetSensorLowspeed(US_BULLET);
+
+     while(true){
+
+         // Bewegund durch die Arena
+         if(SensorUS(US_WALL) > 15 && SensorUS(US_BULLET) > 10){
+             OnFwd(SHOVEL,-SPPED_FORWARD);
+             OnFwdSync(ENGINE,SPPED_FORWARD,0);
+
+         // Drehen
+         }else if(SensorUS(US_WALL) < 8 && SensorUS(US_BULLET) < 14 || SensorUS(US_BULLET) < 8 && Sensor(LIGHT_RIGHT) < COLOR){
+             OnRevSync(ENGINE,SPPED_FORWARD,0);
+             Wait(1000);
+             OnFwdSync(ENGINE,30,50);
+             Wait(1500);
+             
+             
+         // Ball gefunden
+         }else if(SensorUS(US_BULLET) <= 8 && SensorUS(US_WALL) > 12 && Sensor(LIGHT_RIGHT) > COLOR){
+             PlaySound(SOUND_DOWN);
+             Off(ENGINE);
+             
+             // Ball einfangen
+             OnRevSync(ENGINE,SPPED_FORWARD,0);
+             Wait(800);
+             
+             Off(ENGINE);
+
+             OnFwd(SHOVEL,SPPED_FORWARD);
+             Wait(2000);
+
+             Off(SHOVEL);
+
+             OnFwdSync(ENGINE,30,-50);
+             Wait(400);
+
+             OnFwdSync(ENGINE,30,0);
+             while(Sensor(LIGHT_PEAK) < 36){
+             }
+
+             OnRevSync(ENGINE,SPPED_FORWARD/2 ,0);
+             Wait(2500);
+                 
+             Off(ENGINE);
+             Wait(1000);
+             
+             OnFwd(SHOVEL,-50);
+             Wait(2000);
+
+             ballTrapped = true;
+
+             while(ballTrapped == true){
+             
+                 // Bewegund durch die Arena
+                 if(SensorUS(US_WALL) > 15 && SensorUS(US_BULLET) > 10){
+                 OnFwd(SHOVEL,-SPPED_FORWARD);
+                 OnFwdSync(ENGINE,SPPED_FORWARD,0);
+
+                 // Drehen
+                 }else if(SensorUS(US_WALL) < 10 && SensorUS(US_BULLET) < 13){
+                 OnRevSync(ENGINE,SPPED_FORWARD,0);
+                 Wait(1000);
+
+                 OnFwdSync(ENGINE,30,50);
+                 Wait(1500);
+
+                 // Safe-Zone gefunden
+                 }else if(Sensor(LIGHT_RIGHT) < COLOR && SensorUS(US_BULLET) < 6 && SensorUS (US_WALL) > 10){
+                  Off(ENGINE);
+                  
+                  OnFwdSync(ENGINE,SPPED_FORWARD,0);
+                  
+                  ballTrapped = false;
+                 }
+             }
+         }
+     }
+}
