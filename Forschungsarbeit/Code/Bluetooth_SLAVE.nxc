@@ -14,49 +14,44 @@
 
 #define ENGINE  OUT_BC
 
-// Bewegung
-#define AHEAD      0
-#define BACK       0
-#define TURN_LEFT  0
-#define TURN_RIGHT 0
 
 // Linien
-#define WHITE 0
-#define BLACK 0
-#defome GREEM 0
+#define WHITE 42
+#define BLACK 27
+#define GREEN 28
 
 // Geschwindigkeiten
 #define SPEED_NORMAL 50
 
 // Globale Variablen
-bool goal;
+bool goal,goalKeeper;
 
 /*
  * Methode zur Suche des Balles...
  *
  * @since 2016-08-16
  */
-inline bool FindBall(){
+inline void FindBall(){
     while(true){
         // Gerade aus
-        if(SensorHTIRSeeker2ACDir(IF) == 5){
+        if(SensorHTIRSeeker2ACDir(IF) == 5 || SensorHTIRSeeker2ACDir(IF) == 4 || SensorHTIRSeeker2ACDir(IF) == 6){
             OnFwdSync(ENGINE,SPEED_NORMAL,0);
 
         // Leicht links
-        }else if(SensorHTIRSeeker2ACDir(IF) <= 8 && SensorHTIRSeeker2ACDir(IF) >= 6){
-            OnFwdSync(ENGINE,SPEED_NORMAL,-30);
+        }else if(SensorHTIRSeeker2ACDir(IF) == 8 || SensorHTIRSeeker2ACDir(IF) == 7){
+            OnFwdSync(ENGINE,SPEED_NORMAL,30);
 
         // Leicht rechts
-        }else if(SensorHTIRSeeker2ACDir(IF) <= 4 && SensorHTIRSeeker2ACDir(IF) >= 2){
-            OnFwdSync(ENGINE,SPEED_NORMAL,30);
+        }else if(SensorHTIRSeeker2ACDir(IF) == 3 || SensorHTIRSeeker2ACDir(IF) == 2){
+            OnFwdSync(ENGINE,SPEED_NORMAL,-30);
 
         // Stark links
         }else if(SensorHTIRSeeker2ACDir(IF) == 9){
-            OnFwdSync(ENGINE,SPEED_NORMAL,-100);
+            OnFwdSync(ENGINE,SPEED_NORMAL,100);
 
         // Stark rechts
-        }else if(SensorHTIRSeeker2ACDir(IF) == 2){
-            OnFwdSync(ENGINE,SPEED_NORMAL,100);
+        }else if(SensorHTIRSeeker2ACDir(IF) == 1){
+            OnFwdSync(ENGINE,SPEED_NORMAL,-100);
         }
     }
 }
@@ -67,7 +62,7 @@ inline bool FindBall(){
  * @since 2016-08-16
  */
 inline bool whichGoal(){
-    if(SensorHTCompass(COMPASS) >= 340 && SensorHTCompass(COMPASS) <= 350){
+    if(SensorHTCompass(COMPASS) >= 330 && SensorHTCompass(COMPASS) <= 359){
         return true;
     }else{
         return false;
@@ -79,7 +74,7 @@ inline bool whichGoal(){
  *
  * @since 2016-08-16
  */
-void FindGoal(){
+inline bool FindGoal(){
     goal = whichGoal();
     while(true){
         if(goal == true){
@@ -113,24 +108,59 @@ void FindGoal(){
 }
 
 /*
- * Methode die Überprüft ob der andere NXC erreichbar ist.
+ * Überprüft ob es eine weiße Linie sieht...
  *
  * @since 2016-08-16
  */
-sub BTCheck(int conn){
-    if (BluetoothStatus(conn) == NO_ERR){
-        TextOut(5,LCD_LINE2,"Error");
-        Wait(1000);
-        Stop(true);
+inline bool isWhite(){
+    if(Sensor(LIGHT) > 35){
+        Off(ENGINE);
+        OnRevSync(ENGINE,SPEED_NORMAL,50);
+        Wait(1500);
     }
 }
 
+/*
+ * Überprüft ob es eine schwarze Linie sieht...
+ *
+ * @since 2016-08-16
+ */
+inline void isBlack(bool area){
+    if(area == true){
+        if(Sensor(LIGHT) < 27){
+            Off(ENGINE);
+            OnRevSync(ENGINE,SPEED_NORMAL,0);
+            Wait(1000);
+        }
+    }
+}
+
+/*
+ * Methode zur Überprüfung der Verbindung
+ *
+ * @since 2016-08-16
+ */
+bool BTCheck(int conn){
+    if(!BluetoothStatus(conn)==NO_ERR){
+        TextOut(5,LCD_LINE2,"Error");
+        Wait(1000);
+        Stop(true);
+    }else{
+        return true;
+    }
+}
+
+/*
+ * Main...
+ *
+ * @since 2016-08-16
+ */
 task main(){
     // Sensoren setzen
     SetSensorLight(LIGHT);
     SetSensorLowspeed(IF);
     SetSensorLowspeed(COMPASS);
     
-    // Überprüft die Verbindung zum MASTER
-    BTCheck(0); 
+    // Überprüfung der Verbindung
+    BTCheck(0);
 }
