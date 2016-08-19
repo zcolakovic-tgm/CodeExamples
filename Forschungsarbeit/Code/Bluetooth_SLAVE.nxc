@@ -24,7 +24,8 @@
 #define SPEED_NORMAL 50
 
 // Globale Variablen
-bool goal,goalKeeper;
+bool goalKeeper,foundBall,foundGoal;
+int startTime, endTime;
 
 /*
  * Methode zur Suche des Balles...
@@ -61,7 +62,7 @@ inline void FindBall(){
  *
  * @since 2016-08-16
  */
-inline bool whichGoal(){
+inline bool WhichGoal(){
     if(SensorHTCompass(COMPASS) >= 330 && SensorHTCompass(COMPASS) <= 359){
         return true;
     }else{
@@ -75,9 +76,8 @@ inline bool whichGoal(){
  * @since 2016-08-16
  */
 inline bool FindGoal(){
-    goal = whichGoal();
     while(true){
-        if(goal == true){
+        if(WhichGoal == true){
             // Gerade aus
             if(SensorHTCompass(COMPASS) >= 340 && SensorHTCompass(COMPASS) <= 350){
                 OnFwdSync(ENGINE,SPEED_NORMAL,0);
