@@ -28,35 +28,36 @@
 #define CONNECTION 1
 
 // Globale Variablen
-bool goal,goalKeeper;
+bool goalKeeper,foundBall,foundGoal;
+int startTime, endTime;
 
 /*
  * Methode zur Suche des Balles...
  *
+ * @param goalKeeper dient als Information über den derzeitigen stand
+ * ob der Torwart in den Angriff übergehen soll oder nicht.
  * @since 2016-08-16
  */
-inline void FindBall(bool goalKeeper){
-    if(goalKeeper == false){
-        // Gerade aus
-        if(SensorHTIRSeeker2ACDir(IF) == 5 || SensorHTIRSeeker2ACDir(IF) == 4 || SensorHTIRSeeker2ACDir(IF) == 6){
-            OnFwdSync(ENGINE,SPEED_NORMAL,0);
+inline void FindBall(){
+    // Gerade aus
+    if(SensorHTIRSeeker2ACDir(IF) == 5 || SensorHTIRSeeker2ACDir(IF) == 4 || SensorHTIRSeeker2ACDir(IF) == 6){
+        OnFwdSync(ENGINE,SPEED_NORMAL,0);
 
-        // Leicht links
-        }else if(SensorHTIRSeeker2ACDir(IF) == 8 || SensorHTIRSeeker2ACDir(IF) == 7){
-            OnFwdSync(ENGINE,SPEED_NORMAL,30);
+    // Leicht links
+    }else if(SensorHTIRSeeker2ACDir(IF) == 8 || SensorHTIRSeeker2ACDir(IF) == 7){
+        OnFwdSync(ENGINE,SPEED_NORMAL,30);
 
-        // Leicht rechts
-        }else if(SensorHTIRSeeker2ACDir(IF) == 3 || SensorHTIRSeeker2ACDir(IF) == 2){
-            OnFwdSync(ENGINE,SPEED_NORMAL,-30);
+    // Leicht rechts
+    }else if(SensorHTIRSeeker2ACDir(IF) == 3 || SensorHTIRSeeker2ACDir(IF) == 2){
+        OnFwdSync(ENGINE,SPEED_NORMAL,-30);
 
-        // Stark links
-        }else if(SensorHTIRSeeker2ACDir(IF) == 9){
-            OnFwdSync(ENGINE,SPEED_NORMAL,100);
+    // Stark links
+    }else if(SensorHTIRSeeker2ACDir(IF) == 9){
+        OnFwdSync(ENGINE,SPEED_NORMAL,100);
 
-        // Stark rechts
-        }else if(SensorHTIRSeeker2ACDir(IF) == 1){
-            OnFwdSync(ENGINE,SPEED_NORMAL,-100);
-        }
+    // Stark rechts
+    }else if(SensorHTIRSeeker2ACDir(IF) == 1){
+        OnFwdSync(ENGINE,SPEED_NORMAL,-100);
     }
 }
 
@@ -65,7 +66,7 @@ inline void FindBall(bool goalKeeper){
  *
  * @since 2016-08-16
  */
-inline bool whichGoal(){
+inline bool WhichGoal(){
     if(SensorHTCompass(COMPASS) >= 300 && SensorHTCompass(COMPASS) <= 350){
         return true;
     }else{
@@ -76,12 +77,13 @@ inline bool whichGoal(){
 /*
  * Methode zum gerade ausfahren um den Ball zu suchen
  *
+ * @param foundBall dient als Information über den derzeitigen stand
+ * des Balles ob sich der im Besitz befindet oder nicht.
  * @since 2016-08-16
  */
-inline void FindGoal(bool goalKeeper){
-    goal = whichGoal();
-    if(goalKeeper == false){
-        if(goal == true){
+inline void FindGoal(bool foundBall){
+    if(foundBall == true){
+        if(WhichGoal() == true){
             // Gerade aus
             if(SensorHTCompass(COMPASS) >= 315 && SensorHTCompass(COMPASS) <= 325){
                 OnFwdSync(ENGINE,SPEED_NORMAL,0);
@@ -116,33 +118,46 @@ inline void FindGoal(bool goalKeeper){
  *
  * @since 2016-08-16
  */
-inline void GoalKeeper(bool goalKeeper){
-    if(goalKeeper == true){
-        // Gerade aus
-        if(SensorHTIRSeeker2ACDir(IF) == 4 || SensorHTIRSeeker2ACDir(IF) == 5 ||  SensorHTIRSeeker2ACDir(IF) == 6){
-            OnFwdSync(ENGINE,SPEED_STOP,0);
+inline void GoalKeeper(){
+    // Gerade aus
+    if(SensorHTIRSeeker2ACDir(IF) == 4 || SensorHTIRSeeker2ACDir(IF) == 5 ||  SensorHTIRSeeker2ACDir(IF) == 6){
+        OnFwdSync(ENGINE,SPEED_STOP,0);
 
-        // Leicht links
-        }else if(SensorHTIRSeeker2ACDir(IF) == 8 || SensorHTIRSeeker2ACDir(IF) == 7){
-            OnFwdSync(ENGINE,SPEED_STOP,30);
+    // Leicht links
+    }else if(SensorHTIRSeeker2ACDir(IF) == 8 || SensorHTIRSeeker2ACDir(IF) == 7){
+        OnFwdSync(ENGINE,SPEED_STOP,30);
 
-        // Leicht rechts
-        }else if(SensorHTIRSeeker2ACDir(IF) == 3 || SensorHTIRSeeker2ACDir(IF) == 2){
-            OnFwdSync(ENGINE,SPEED_STOP,-30);
+    // Leicht rechts
+    }else if(SensorHTIRSeeker2ACDir(IF) == 3 || SensorHTIRSeeker2ACDir(IF) == 2){
+        OnFwdSync(ENGINE,SPEED_STOP,-30);
 
-        // Stark links
-        }else if(SensorHTIRSeeker2ACDir(IF) == 9){
-            OnFwdSync(ENGINE,SPEED_STOP,100);
+    // Stark links
+    }else if(SensorHTIRSeeker2ACDir(IF) == 9){
+        OnFwdSync(ENGINE,SPEED_STOP,100);
 
-        // Stark rechts
-        }else if(SensorHTIRSeeker2ACDir(IF) == 1){
-            OnFwdSync(ENGINE,SPEED_STOP,-100);
-        }
+    // Stark rechts
+    }else if(SensorHTIRSeeker2ACDir(IF) == 1){
+        OnFwdSync(ENGINE,SPEED_STOP,-100);
     }
 }
 
-inline bool StrikerActive(){
-
+/*
+ * Methode die den Torwart in den Sturm schickt.
+ *
+ * @param foundBall dient als Information über den derzeitigen stand
+ * des Balles ob sich der im Besitz befindet oder nicht.
+ * @param foundGoal
+ * @param goalKeeper dient als Information über den derzeitigen stand
+ * ob der Torwart in den Angriff übergehen soll oder nicht.
+ * @since 2016-08-16
+ */
+inline bool StrikerActive(bool foundBall, bool foundGoal, bool goalKeeper){
+    if(goalKeeper == true){
+        GoalKeeper();
+    }else{
+        FindBall();
+        FindGoal(foundBall);
+    }
 }
 
 /*
@@ -161,6 +176,8 @@ inline void isWhite(){
 /*
  * Überprüft ob es eine schwarze Linie sieht...
  *
+ * @param goalKeeper dient als Information über den derzeitigen stand
+ * ob der Torwart aus dem Strafraum hinaus darf oder noch nicht.
  * @since 2016-08-16
  */
 inline void isBlack(bool goalKeeper){
@@ -175,7 +192,10 @@ inline void isBlack(bool goalKeeper){
 
 /*
  * Methode zur Überprüfung der Verbindung
- * https://github.com/grahl/nxt/blob/master/Examples/BluetoothMaster.nxc
+ * 
+ * @source Kopiert von https://github.com/grahl/nxt/blob/master/
+ *                     Examples/BluetoothMaster.nxc
+ * @param conn die Nummer der Connection
  * @since 2016-08-16
  */
 bool BTCheck(int conn){
@@ -197,19 +217,20 @@ task main(){
     SetSensorLight(LIGHT);
     SetSensorLowspeed(IF);
     SetSensorLowspeed(COMPASS);
-
-    Sensor(LIGHT);
-    SensorHTIRSeeker2ACDir(IF);
-    SensorHTCompass(COMPASS);
-
+    
+    /*
     while(true){
+         // Holt sich den abgelegten Wert aus der Queue vom SLAVE
+         ReceiveRemoteBool(MAILBOX1 , true, goalKeeper);
         // Überprüfung der Verbidnung
-        if(BTCheck(1) == true){
-            GoalKeeper(true);
+        if(BTCheck(BT_CONN) == false){
+            TextOut(1,LCD_LINE2,"Striker mood active!!!");
+            
         }else{
-            FindBall(true);
-            FindGoal(true);
+            TextOut(1,LCD_LINE1,"Keeper mood acitve!!!");
+            
         }
     }
+    */
 
 }
