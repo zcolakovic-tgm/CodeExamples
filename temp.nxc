@@ -1,82 +1,53 @@
-
-/*
-#define MOTOR OUT_BC
-#define SPEED 90
-#define SPEED_BALL 70
-#define INFR IN_4
-#define LS_R IN_1
-#define LS_L IN_3
-#define KOMPASS IN_2
-#define WHITE 35
-
-task main(){
-    SetSensorLight(LS_R);
-    SetSensorLight(LS_L);
-    SetSensorLowspeed (KOMPASS);
-    SetSensorLowspeed(INFR);
-    byte s1, s3, s5, s7, s9, dir;
-    bool result = ReadSensorHTIRSeeker2AC(INFR, dir, s1, s3, s5, s7, s9);
-
-    while(true){
-        // Weiße äußere Linie erkannt und gedreht
-        if(Sensor(LS_R) > WHITE){
-            OnRevSync(MOTOR, SPEED, 0);
-            Wait(700);
-        }
-        // Auf grünem Boden, fährt in die Richtung des Balles
-        else if(Sensor(LS_R) < WHITE){
-            ReadSensorHTIRSeeker2AC(INFR, dir, s1, s3, s5, s7, s9);
-            if(SensorHTIRSeeker2ACDir(INFR) == 1)
-            {
-                OnFwdSync(MOTOR, SPEED, -80);
-            }
-            else if(SensorHTIRSeeker2ACDir(INFR) == 2)
-            {
-               OnFwdSync(MOTOR, SPEED, -60);
-            }
-            else if(SensorHTIRSeeker2ACDir(INFR) == 3)
-            {
-               OnFwdSync(MOTOR, SPEED, -40);
-            }
-            else if(SensorHTIRSeeker2ACDir(INFR) == 4)
-            {
-               OnFwdSync(MOTOR, SPEED, -20);
-            }
-            else if(SensorHTIRSeeker2ACDir(INFR) == 5)
-            {
-               OnFwdSync(MOTOR, SPEED, 0);
-            }
-            else if(SensorHTIRSeeker2ACDir(INFR) == 6)
-            {
-               OnFwdSync(MOTOR, SPEED, 20);
-            }
-            else if(SensorHTIRSeeker2ACDir(INFR) == 7)
-            {
-               OnFwdSync(MOTOR, SPEED, 40);
-            }
-            else if(SensorHTIRSeeker2ACDir(INFR) == 8)
-            {
-               OnFwdSync(MOTOR, SPEED, 60);
-            }
-            else if(SensorHTIRSeeker2ACDir(INFR) == 9)
-            {
-               OnFwdSync(MOTOR, SPEED, 80);
-            }
-            if (s5 >= 170){
-                 if (SensorHTCompass (KOMPASS) > 280 && SensorHTCompass (KOMPASS) <345){
-                    OnFwdSync (MOTOR, SPEED_BALL, 0);
-                }
-                if(SensorHTCompass (KOMPASS) >=0 && SensorHTCompass (KOMPASS) <130) {
-                    OnFwdSync(MOTOR, 50,-50);
-                }
-                if(SensorHTCompass (KOMPASS) >=130 &&SensorHTCompass (KOMPASS)<345) {
-                    OnFwdSync(MOTOR, 50,50);
-                }
-                if(SensorHTCompass (KOMPASS) >=345 &&SensorHTCompass (KOMPASS)<359) {
-                    OnFwdSync(MOTOR, 50, -50);
-                }
-            }
-        }
-    }
+//SLAVE
+#include "NXCDefs.h"
+#define BT_CONN 1
+#define OUT_MBOX 1
+#define IN_MBOX 5
+sub BTCheck(int conn){
+if (!BluetoothStatus(conn)==NO_ERR){
+TextOut(5,LCD_LINE2,"Error");
+Wait(1000);
+Stop(true);
 }
-*/
+}
+task main(){
+int in;
+BTCheck(0);
+TextOut(5,LCD_LINE1,"Slave receiving");
+SendResponseNumber(OUT_MBOX,0xFF); //unblock master
+while(true){
+if (ReceiveRemoteNumber(IN_MBOX,true,in) != STAT_MSG_EMPTY_MAILBOX) {
+TextOut(0,LCD_LINE3," ");
+NumOut(5,LCD_LINE3,in);
+SendResponseNumber(OUT_MBOX,0xFF);
+}
+}
+}
+
+//MASTER
+#include "NXCDefs.h"
+#define BT_CONN 1
+#define OUTBOX 5
+#define INBOX 1
+sub BTCheck(int conn){
+if (!BluetoothStatus(conn)==NO_ERR){
+TextOut(5,LCD_LINE2,"Error");
+Wait(1000);
+Stop(true);
+}
+}
+task main(){
+int ack, i = 0;
+BTCheck(BT_CONN);
+TextOut(10,LCD_LINE1,"Master sending");
+while(true){
+i = i+1;
+TextOut(0,LCD_LINE3," ");
+NumOut(5,LCD_LINE3,i);
+ack = 0;
+SendRemoteNumber(BT_CONN,OUTBOX,i);
+until(ack==0xFF) {
+until(ReceiveRemoteNumber(INBOX,true,ack) == NO_ERR);
+}
+}
+}
