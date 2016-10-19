@@ -1,0 +1,141 @@
+import threading
+import sys
+
+global _newMassage
+_newMassage = ''
+
+class Verschluesselung(threading.Thread):
+    """
+    Die Klasse nimt vom Benutzer eingegebene Nachrrichten
+    und verschluesselt diese mittels Threads
+    """
+    __anzahl = 0
+    _newMassage = ''
+    def __init__(self,_mood,_oldMassage,_key):
+        """
+        Initialisiert die Superklasse und speichert
+        die Parameter in die Instanzvariablen.
+        :param _mood: Bestimmt ob die Nachrricht ver- oder entschluesselt wird
+        :param _key: Bestimmt um wie viel die ASCII-Tabelle verschoben werden soll
+        :param _oldMassage: Die alte Nachrricht.
+        """
+        threading.Thread.__init__(self)
+        self._key = _key
+        self._mood = _mood
+        self._oldMassage = _oldMassage
+        Verschluesselung.__anzahl += 1
+
+    @classmethod
+    def get_thread_anzahl(cls):
+        """
+        Liefert die Gesamtanzahl an Threads zurück.
+        :return: Anzahl an erzeugten Threads
+        """
+        return cls.__anzahl
+
+    def run(self):
+        """
+        In der Run wird der Text bearbeitet.
+        Bei 1 wird verschluesselt.
+        Bei 0 wird entschluesselt.
+        :return: None
+        """
+        if self._mood == 0:
+            for c in self._oldMassage:
+                Verschluesselung._newMassage += chr(ord(c) + self._key)
+        elif self._mood == 1:
+            for c in self._oldMassage:
+                Verschluesselung._newMassage += chr(ord(c) - self._key)
+        else:
+            print("Ihre Eingabe war ungültig!!!")
+
+    #def userInput(_response):
+        #"""
+        #Nachrricht vom User annehmen
+        #:param _response: Kompletter Text wird in ascii umgewandelt
+        #"""
+        #_response = _response.lower()
+        #_ascii = [ord(c) for c in _response]
+        #print(_ascii)
+        #return _ascii
+
+    #def encryptingUserMassage(_ascii,_key):
+        #"""
+        #Nachrricht vom User annehmen
+        #"""
+        #_asciiChanged = []
+        #print(_key)
+        #for x in _ascii:
+            #_asciiChanged.append(x + int(_key))
+        #return _asciiChanged
+
+    #def decryptingUserMassage(_ascii,_key):
+        #"""
+        #Nachrricht vom User annehmen
+        #:param _x: Von wo Verschlüsselt werden soll
+        #:param _y: Bis wohin Verschluesselt werden soll
+        #"""
+        #_asciiChanged = []
+        #for x in _ascii:
+            #_asciiChanged.append(x - int(_key))
+        #return _asciiChanged
+
+    #def newMessage(_ascii):
+        #_newMassage = [chr(c) for c in _ascii]
+        #return _newMassage
+
+    # Nimmt die Nachrricht des User entgegen
+
+    num = 0
+    while num == 0:
+        _mood = input("Wollen Sie Verschluesseln(0) oder Entschluesseln(1): ")
+
+        try:
+            _mood = int(_mood)
+            num = 1
+        except ValueError:
+            print("Ungueltige Eingabe! Versuchen Sie es nochmal!")
+            num = 0
+
+    num = 0
+    while num == 0:
+        _oldMassage = input("Bitte geben Sie eine Nachrricht ein: ")
+        _change = input("Ihre Nachrricht lautet: <" + _oldMassage + "> Wollen Sie diese aendern (Ja[0]/Nein[1])? ")
+        try:
+            _change = int(_change)
+            num = 1
+        except ValueError:
+            print("Ungueltige Eingabe! Versuchen Sie es nochmal!")
+            num = 0
+
+    num = 0
+    while num == 0:
+        # Um wie viel die ASCII-Tabelle verschoben werden soll
+        _key = input("Bitte geben Sie eine Verschluesselungskey ein (Eine Zahl): ")
+        try:
+            _key = int(_key)
+            num = 1
+        except ValueError:
+            print("Ungueltige Eingabe! Versuchen Sie es nochmal!")
+            num = 0
+
+    num = 0
+    while num == 0:
+        #Wie viele Threads sollen verwendet werden
+        _threads = input("Wie viele Threads sollen beutzt werden (Eine Zahl): ")
+        try:
+            _threads = int(_threads)
+            num = 1
+        except ValueError:
+            print("Ungueltige Eingabe! Versuchen Sie es nochmal!")
+            num = 0
+
+zahl = round(len(Verschluesselung._oldMassage) / Verschluesselung._threads)
+threads = []
+for i in range(0, Verschluesselung._threads):
+    thread = Verschluesselung(Verschluesselung._mood,Verschluesselung._oldMassage[i * zahl:(i + 1) * zahl], Verschluesselung._key)
+    threads += [thread]
+    # Thread gleich starten
+    thread.start()
+
+print(Verschluesselung._newMassage)
